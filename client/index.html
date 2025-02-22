@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+</head>
+<body>
+    
+    <h1>Produtos</h1>
+
+    <label for="name">Nome: </label>
+    <input type="text" id="name">
+
+    <label for="price">Preço: </label>
+    <input type="number" name="price" id="price">
+
+    <label for="session">Seção: </label>
+    <input type="text" id="session">
+
+    <button onclick="addProduct()">Cadastrar</button>
+
+    <div id="productsList"></div>
+
+    <script>
+
+        async function fetchProducts() {
+            const req = await fetch("http://localhost:3000/produtos")
+            const products = await req.json()
+
+            const productsList = document.getElementById('productsList')
+            productsList.innerHTML = ""
+
+            products.forEach(product => {
+                const productElement = document.createElement('p')
+                productElement.textContent = `Nome: ${product.nome} | Preço: ${product.preco} | Seção: ${product.secao}`
+                productsList.appendChild(productElement)
+            })
+        }
+
+        async function addProduct() {
+            const nome = document.getElementById('name').value
+            const preco = document.getElementById('price').value
+            const secao = document.getElementById('session').value
+
+            const req = await fetch("http://localhost:3000/produtos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ nome, preco, secao })
+            })
+
+            fetchProducts()
+        }
+
+        fetchProducts()
+
+    </script>
+
+</body>
+</html>
